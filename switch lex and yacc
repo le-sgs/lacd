@@ -44,9 +44,6 @@ case_statements: case_statement
 case_statement: CASE NUMBER ':' statement BREAK ';'
               ;
 
-statement: /* Your rules for statements within a case */
-         ;
-
 %%
 
 int yyerror()
