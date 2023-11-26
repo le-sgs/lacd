@@ -11,8 +11,8 @@
 "{" { return LBRACE; }
 "}" { return RBRACE; }
 [ \t\n] ;  // Ignore whitespace
-[a-zA-Z][a-zA-Z0-9_]* { yylval.sval = strdup(yytext); return ID; }
-[0-9]+ { yylval.ival = atoi(yytext); return NUMBER; }
+[a-zA-Z][a-zA-Z0-9_]* { return ID; }
+[0-9]+ { yylval = atoi(yytext); return NUMBER; }
 
 . { /* Ignore other characters */ }
 
