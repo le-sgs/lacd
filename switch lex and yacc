@@ -1,0 +1,67 @@
+//lex
+%{
+    #include<stdio.h>
+    #include "y.tab.h"
+%}
+
+%%
+"switch" { return SWITCH; }
+"case" { return CASE; }
+"break" { return BREAK; }
+"{" { return LBRACE; }
+"}" { return RBRACE; }
+[ \t\n] ;  // Ignore whitespace
+
+. { /* Ignore other characters */ }
+
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+
+//yacc
+%{
+    #include<stdio.h>
+    int valid = 1;
+%}
+
+%token SWITCH CASE BREAK LBRACE RBRACE
+
+%%
+program: switch_statement
+        ;
+
+switch_statement: SWITCH '(' ID ')' LBRACE case_statements RBRACE
+                ;
+
+case_statements: case_statement
+              | case_statements case_statement
+              ;
+
+case_statement: CASE NUMBER ':' statement BREAK ';'
+              ;
+
+statement: /* Your rules for statements within a case */
+         ;
+
+%%
+
+int yyerror()
+{
+    printf("Not Valid Switch-Case Syntax\n");
+    valid = 0;
+    return 0;
+}
+
+int main()
+{
+    yyparse();
+    if (valid)
+    {
+        printf("Valid Syntax\n");
+    }
+    return 0;
+}
