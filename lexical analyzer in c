@@ -1,0 +1,52 @@
+#include<stdio.h>
+#include<ctype.h>
+#include<string.h>
+
+int iskeyword(char check[])
+{
+	char keyword[10][10]={"int","void","main"};
+	for(int i=0;i<3;i++)
+	{
+		if(strcmp(check,keyword[i])==0)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void main()
+{
+	char c,operator[]="}/*-+{)(";
+	char buffer[100];
+	FILE *fp;
+	int j=0;
+	fp=fopen("source_code.txt","r");
+	while((c=fgetc(fp))!=EOF)
+	{
+		for(int i=0;i<8;i++)
+		{
+			if(c==operator[i])
+			{
+				printf("%c is operator\n", c);
+			}
+		}
+		if(isalnum(c))
+		{
+			buffer[j++]=c;
+		}
+		else if((c==' '||c=='\n'||c=='\t')&&(j!=0))
+		{
+			buffer[j]='\0';
+			j=0;
+			if(iskeyword(buffer)==1)
+			{
+				printf("%s is keyword\n", buffer);
+			}
+			else
+			{
+				printf("%s is identifier\n", buffer);
+			}
+		}
+	}
+}
