@@ -51,3 +51,8 @@ int main()
 	}
 	return 0;
 }
+
+// How to run
+lex your_lex_file.l
+yacc -d your_yacc_file.y
+gcc lex.yy.c y.tab.c -o your_program_name -ll
