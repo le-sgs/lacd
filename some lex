@@ -1,0 +1,490 @@
+Lex Program to Identify and Count Positive and Negative Numbers
+
+%{
+	#include<stdio.h>
+	#include<stdlib.h>
+	int pos_no=0;
+	int neg_no=0;
+%}
+%%
+^[-][0-9]+ {printf("Negative number\n");neg_no++;}
+[0-9]+ {printf("Positive number\n");pos_no++;}
+%%
+
+int yywrap(){
+printf("The number of positive and negative numbers are %d and %d",pos_no,neg_no);
+return 1;
+}
+int main(){
+	yylex();
+	return 0;
+}
+
+LEX program to count the number of vowels and consonants in a given string
+
+%{
+	#include<stdio.h>
+	#include<stdlib.h>
+	int vowels=0;
+	int consonants=0;
+%}
+%%
+[aAeEiIoOuU] {vowels++;}
+[\t|\n\" "] ;
+. {consonants++;}
+%%
+
+int yywrap(){
+printf("The number of vowels and consonants are %d and %d",vowels,consonants);
+return 1;
+}
+int main(){
+	yylex();
+	return 0;
+}
+
+
+Lex Program to accept string starting with vowel
+
+%{
+	#include<stdio.h>
+	#include<stdlib.h>
+	int flag=0;
+%}
+%%
+^[aAeEiIoOuU][a-zA-Z0-9]* {flag=1;}
+[a-zA-Z0-9]* ;
+%%
+
+int yywrap(){
+if(flag==1)
+		printf("Accepted\n");
+	else
+		printf("Not accepted\n");
+	return 1;
+}
+int main(){
+	yylex();
+	return 0;
+}
+
+
+Lex program to find the length of a String
+
+%{
+	#include<stdio.h>
+	#include<stdlib.h>
+	int cnt=0;
+%}
+%%
+[a-zA-Z0-9] {cnt++;}
+. ;
+%%
+
+int yywrap(){
+	printf("Length:%d",cnt);
+	return 1;
+}
+int main(){
+	yylex();
+	return 0;
+}
+
+
+Lex Program to remove comments from C program
+
+%{ 
+%}
+  
+start \/\* 
+end  \*\/ 
+  
+/*Rule Section*/ 
+%% 
+  
+\/\/(.*) ;  
+{start}.*{end} ; 
+  
+%% 
+
+int yywrap(){
+return 1;
+}
+int main(int k,char **argcv) 
+{ 
+yyin=fopen(argcv[1],"r"); 
+yyout=fopen("out.c","w"); 
+yylex(); 
+return 0; 
+} 
+
+Lex Program to check if a number is Armstrong
+
+%{ 
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<math.h>
+%}
+ 
+%% 
+[0-9]+ {
+int num = atoi(yytext);
+int temp = num;
+int len = strlen(yytext);
+int sum=0;
+while(num!=0){
+	int ld = num%10;
+	sum += pow(ld,len);
+	num /= 10;
+}
+if(sum == temp)
+	printf("Armstrong\n");
+else
+	printf("Not an armstrong\n");
+}
+. ;
+%% 
+
+int yywrap(){
+return 1;
+}
+int main() 
+{ 
+yylex(); 
+return 0; 
+} 
+
+
+ lex pgm.l
+gcc lex.yy.c -o armstrong -lm
+./armstrong
+153
+Armstrong
+
+1221
+Not an armstrong
+
+Yacc Program to check if a number is palindrome or not.
+
+Yacc
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+// Declare functions and tokens here
+int isPalindrome(int number);
+void yyerror(const char *s);
+%}
+
+%token NUMBER
+
+%%
+input: 
+		| input line
+line: '\n'
+		| expression '\n' {printf("%d is %s\n",$1,isPalindrome($1) ? "a palindrome" : "not a palindrome");}
+expression: NUMBER
+		;
+%%
+int main(){
+	yyparse();
+	return 0;
+}
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+    exit(1);
+}
+
+int isPalindrome(int number){
+	int temp = number;
+	int rev=0;
+	while(number!=0){
+		rev = rev*10+number%10;
+		number /= 10;
+	}
+	return temp==rev;
+}
+
+Lex
+
+%{
+#include "y.tab.h"
+%}
+
+DIGIT   [0-9]
+
+%%
+{DIGIT}+    { yylval = atoi(yytext); return NUMBER; }
+\n          return '\n';
+.           return yytext[0];
+%%
+
+lex pgm.l
+yacc -d pgm.y
+gcc -o pgm lex.yy.c y.tab.c -ll
+./pgm
+
+
+Program to check if a for loop syntax is valid or not.
+
+Yacc
+
+%{
+	#include<stdio.h>
+	int valid=1;
+%}
+%token FOR LPAREN TYPE ID EQ NUMBER COMMA COMP RPAREN UPD
+%%
+FORSTMT:FOR LPAREN TYPE ID EQ NUMBER COMMA ID COMP NUMBER COMMA ID UPD RPAREN
+%%
+int yyerror()
+{
+	printf("Not Valid For Syntax");
+	valid=0;
+	return 0;
+}
+int main()
+{
+	yyparse();
+	if(valid)
+	{
+		printf("Valid Syntax");
+	}
+	return 0;
+}
+
+Lex
+
+%{
+	#include<stdio.h>
+	#include "y.tab.h"
+%}
+%%
+for {return FOR;}
+[(] {return LPAREN;}
+int|double|float {return TYPE;}
+[a-zA-Z_][a-zA-Z0-9_]* {return ID;}
+[=] {return EQ;}
+[0-9]+ {return NUMBER;}
+[;] {return COMMA;}
+[<>] {return COMP;}
+[<>][=] {return COMP;}
+[)] {return RPAREN;}
+[+][+] {return UPD;}
+[-][-] {return UPD;}
+[ ] {}
+[\n] {return 0;}
+%%
+int yywrap()
+{	
+	return 1;
+}
+
+
+Yacc program to convert binary to decimal
+
+Lex
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include "y.tab.h"
+extern int yylval;
+%}
+
+%% 
+[0] {yylval=0; return ZERO;}
+[1] {yylval=1; return ONE;}
+[' '|'\t'] {;} 
+'\n' {return 0;}
+. {return yytext[0];}
+
+%% 
+
+int yywrap() {	
+    return 1;
+}
+
+Yacc
+
+%{
+	#include<stdio.h>
+	#include<stdlib.h>
+	#include<math.h>
+	#include<string.h>
+%}
+%token ZERO ONE
+%% 
+N: L {printf("\n%d", $$);} 
+L: L B {$$=$1*2+$2;} 
+| B {$$=$1;} 
+B:ZERO {$$=$1;} 
+|ONE {$$=$1;}; 
+%% 
+  
+int yyerror()
+{
+	printf("Not Valid For Syntax");
+	return 0;
+}
+
+int main()
+{
+	yyparse();
+	return 0;
+}
+
+Yacc program to recognize a^nb where n>=5
+
+Yacc
+
+%{
+	#include<stdio.h>
+	#include<stdlib.h>
+	int yyerror(char *s);
+%}
+
+%token A B NL
+
+%%
+statement:A A A A A S B {printf("valid String\n");exit(0);}
+;
+S:S A
+|
+;
+%%
+int yyerror(char *s){
+	printf("Invalid String\n");
+	exit(0);
+}
+int main(){
+	printf("Enter the string\n");
+	yyparse();
+	return 0;
+}
+
+
+Lex
+
+%{
+#include "y.tab.h"
+%}
+
+%%
+[aA] {return A;}
+[bB]	{return B;}
+'\n' 	{return NL;}
+.	{return yytext[0];}
+%%
+
+int yywrap(){
+	return 1;
+}
+
+
+Yacc program to check if a string either starts and ends with 0 or 1
+
+Yacc
+
+%{
+	#include<stdio.h>
+	#include<stdlib.h>
+	int yyerror(char *s);
+%}
+
+%token ZERO ONE
+
+%%
+S:E {printf("Valid string\n");exit(0);}
+;
+E:N	
+|ZERO A
+|ONE B
+;
+A:N A
+|ZERO
+;
+B:N B
+|ONE
+;
+N:ONE
+|ZERO
+;
+
+%%
+int yyerror(char *s){
+	printf("Invalid String\n");
+	exit(0);
+}
+int main(){
+	printf("Enter the string\n");
+	yyparse();
+	return 0;
+}
+
+Lex
+
+%{
+#include "y.tab.h"
+extern int yylval;
+%}
+
+%%
+0	{yylval=0;return ZERO;}
+1	{yylval=1;return ONE;}
+.|\n {return 0;}
+%%
+
+int yywrap(){
+	return 1;
+}
+
+Lex program to read a number from a file and check if it is odd or even.
+
+%{
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+%}
+
+%%
+[0-9]+ {int num = atoi(yytext);
+	if(num%2==0)
+		printf("Even\n");
+	else
+		printf("Odd\n");
+	}
+\t|" " {;}
+. ;
+%%
+
+int yywrap(){
+return 1;
+}
+
+int main(int k,char *argv[]){
+	if(k!=2)
+	{
+		printf("Error\n");
+		return 0;
+	}
+	
+	FILE* input = fopen(argv[1],"r");
+	if(!input){
+		perror("Error\n");
+		return 0;
+	}
+	
+	yyin = input;
+	yylex();
+	fclose(input);
+	return 0;
+}
+lex pgm.l
+gcc lex.yy.c
+./a.out input.txt
+
+
