@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+%}
+
+DIGIT [0-9]
+
+%%
+^(\+91-)?{DIGIT}{10}$    printf("Valid Indian phone number: %s\n", yytext);
+^0{DIGIT}{10}$            printf("Valid Indian phone number: %s\n", yytext);
+.                        printf("Invalid Indian phone number: %s\n", yytext);
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
