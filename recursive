@@ -1,0 +1,81 @@
+#include<stdio.h>
+#include<string.h>
+
+/*
+		 E->TE' 
+		 E'->+TE'|e 
+		 T->FT' 
+		 T'->*FT'|e 
+		 F->(E)|i
+*/
+
+void E();
+void T();
+void F();
+void Eds();
+void Tds();
+
+char input[100];
+int i, error;
+
+int main() {
+    printf("Enter the input \n");
+    gets(input);
+    E();
+    
+    if (i == strlen(input) && error == 0) {
+        printf("String is Accepted\n");
+    } else {
+        printf("String is Rejected\n");
+    }
+}
+
+void printProduction(const char* production) {
+    printf("%-30s %-30s\n", input + i, production);
+}
+
+void E() {
+    T();
+    Eds();
+}
+
+void T() {
+    F();
+    Tds();
+}
+
+void Eds() {
+    if (input[i] == '+') {
+        printProduction("E -> TE'");
+        i++;
+        T();
+        Eds();
+    }
+}
+
+void Tds() {
+    if (input[i] == '*') {
+        printProduction("T -> FT'");
+        i++;
+        F();
+        Tds();
+    }
+}
+
+void F() {
+    if ((input[i] >= 'a' && input[i] <= 'z') || (input[i] >= 'A' && input[i] <= 'Z')) {
+        printProduction("F -> id");
+        i++;
+    } else if (input[i] == '(') {
+        printProduction("F -> (E)");
+        i++;
+        E();
+        if (input[i] == ')') {
+            i++;
+        } else {
+            error = 1;
+        }
+    } else {
+        error = 1;
+    }
+}
