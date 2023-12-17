@@ -1,0 +1,18 @@
+%{
+#include <stdio.h>
+%}
+
+ALPHA [a-zA-Z]
+DIGIT [0-9]
+ALPHANUM [a-zA-Z0-9]
+
+%%
+{ALPHANUM}+([._%+-]{ALPHANUM}+)*@{ALPHANUM}+([.-]{ALPHANUM}+)*\.{ALPHA}{2,}
+   printf("Valid email address: %s\n", yytext);
+.  printf("Invalid email address: %s\n", yytext);
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
