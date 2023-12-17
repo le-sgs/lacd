@@ -1,0 +1,58 @@
+date.l
+%{
+	#include "y.tab.h"
+	extern int yylval;
+%}
+%%
+[0-9]+ {yylval=atoi(yytext);return digit;};
+\n return 0;
+. return yytext[0];
+%%
+int yywrap()
+{
+	return 1;
+}
+
+date.y
+%{
+	#include<stdio.h>
+	int valid=1;
+%}
+%token digit
+%%
+s:digit'/'digit'/'digit {
+				int date=$1,month=$3,year=$5;
+				if(!(date>0&&date<31))
+					valid=0;	
+				if(!(month>0&&month<=12))
+					valid=0;
+				if(!((year<10000)&&year>=0))
+					valid=0;
+				if(month==2)
+				{
+					if(year%4==0)
+					{
+						if(!(date>0&&date<=29))
+							valid=0;
+					}
+					else
+					{
+						if(!(date>0&&date<=28))
+							valid=0;
+					}
+				}
+			}
+%%
+int yyerror()
+{	
+	return 0;
+}
+int main()
+{
+	yyparse();
+	if(valid)
+		printf("VALID!\n");
+	else
+		printf("INVALID!\n");
+	return 0;
+}
