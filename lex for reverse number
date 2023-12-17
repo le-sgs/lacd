@@ -1,0 +1,20 @@
+%{
+#include "y.tab.h"
+%}
+
+%%
+[0-9]+      { yylval = atoi(yytext); return NUMBER; }
+\n          { return '\n'; }
+.           { return yytext[0]; }
+%%
+
+int yywrap() {
+    return 1;
+}
+
+
+/*
+lex reverse.l
+yacc reverse.y -d
+gcc lex.yy.c y.tab.h -ll
+*/
