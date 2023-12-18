@@ -1,0 +1,51 @@
+//lex
+
+%{
+#include "y.tab.h"
+extern int yylval;
+%}
+%%
+[0-9]+ {
+	yylval=atoi(yytext);return NUMBER;}
+[\n] return 0;
+%%
+int yywrap()
+{
+	return 1;
+}
+
+
+//yacc
+%{
+	#include<stdio.h>
+	int valid=1;
+%}
+%token NUMBER
+%%
+s:NUMBER {
+	int temp=yylval,rem,rev;
+	while ( temp > 0)
+		{
+		      rem = temp %10;
+		      rev = rev *10+ rem;
+		      temp = temp /10;
+   		}
+   		if(yylval!=rev)
+   			valid=0;
+	}
+%%
+int yyerror()
+{
+	return 0;
+}
+int main()
+{
+	yyparse();
+	if(valid==1)
+	{
+		printf("Valid ");
+	}
+	else
+		printf("Invalid");
+	return 0;
+}
